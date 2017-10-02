@@ -9,7 +9,7 @@ import (
 //it abstracts away the fact that domain entities need to be saved to or loaded from some kind of persistence mechanism
 type ArticleRepository interface {
 	FetchAll() ([]*Article, error)
-	FindByTitle(title string) (Article, error)
+	FindByTitle(title string) (*Article, error)
 	Store(article Article) error
 }
 

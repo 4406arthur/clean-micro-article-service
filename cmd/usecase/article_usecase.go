@@ -15,13 +15,14 @@ type ArticleInteractor struct {
 	Logger            Logger
 }
 
-//FetchAll ...
-func (interactor *ArticleInteractor) FetchAll() (*entity.Article, error) {
-	listArticle, err := interactor.ArticleRepository.FetchAll()
-	if err != nil {
-		interactor.Logger.Log(err.Error())
-		return nil, err
-	}
+func (interactor *ArticleInteractor) Get(title string) (entity.Article, error) {
 
-	return listArticle, nil
+}
+
+func (interactor *ArticleInteractor) List() ([]*entity.Article, error) {
+
+}
+
+func (interactor *ArticleInteractor) Create(article entity.Article) error {
+
 }
