@@ -17,6 +17,12 @@ type DbRepo struct {
 
 type DbArticleRepo DbRepo
 
+func NewDbArticleRepo(dbHandler DbHandler) *DbArticleRepo {
+	dbArticleRepo := new(DbArticleRepo)
+	dbArticleRepo.dbHandler = dbHandler
+	return dbArticleRepo
+}
+
 func (repo *DbArticleRepo) FetchAll() ([]*entity.Article, error) {
 	articles, err := repo.dbHandler.GetAll()
 	if err != nil {
