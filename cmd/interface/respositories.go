@@ -6,7 +6,7 @@ import (
 
 //TODO
 type DbHandler interface {
-	GetAll() ([]*map[string]interface{}, error)
+	GetAll() ([]map[string]interface{}, error)
 	GetByTitle(title string) (map[string]interface{}, error)
 	Save(article map[string]interface{}) error
 }

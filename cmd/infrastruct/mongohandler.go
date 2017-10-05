@@ -21,7 +21,7 @@ type MongoHandler struct {
 	Session *mgo.Session
 }
 
-func (handler *MongoHandler) GetAll() ([]*map[string]interface{}, error) {
+func (handler *MongoHandler) GetAll() ([]map[string]interface{}, error) {
 
 }
 
