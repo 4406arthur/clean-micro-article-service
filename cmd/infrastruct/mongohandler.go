@@ -1,10 +1,13 @@
 package infrastruct
 
 import (
-	"gopkg.in/mgo.v2"
+	"encoding/json"
 	"log"
-	"github.com/4406arthur/clean-micro-article-service/cmd/interfaces"
-	
+
+	"github.com/4406arthur/clean-micro-article-service/pkg/entity"
+
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func NewSqliteHandler(connString string) *MongoHandler {
@@ -13,7 +16,7 @@ func NewSqliteHandler(connString string) *MongoHandler {
 		panic(err)
 	}
 	mongoHandler := new(MongoHandler)
-	sqliteHandler.Session = session
+	mongoHandler.Session = session
 	return mongoHandler
 }
 
@@ -22,7 +25,19 @@ type MongoHandler struct {
 }
 
 func (handler *MongoHandler) GetAll() ([]map[string]interface{}, error) {
+	session := handler.Session.Copy()
+	defer session.Close()
 
+	c := session.DB("blog").C("articles")
+
+	var collection []map[string]interface{}
+	err := c.Find(bson.M{}).All(&collection)
+	if err != nil {
+		log.Println("Failed get all articles: ", err)
+		return nil, err
+	}
+
+	return collection, nil
 }
 
 func (handler *MongoHandler) GetByTitle(title string) (map[string]interface{}, error) {
@@ -31,27 +46,37 @@ func (handler *MongoHandler) GetByTitle(title string) (map[string]interface{}, e
 
 	c := session.DB("blog").C("articles")
 
-	var article
-	err := c.Find(bson.M{"title": title}).One(&article)
+	var collection map[string]interface{}
+	err := c.Find(bson.M{"title": title}).One(&collection)
 	if err != nil {
-		ErrorWithJSON(w, "Database error", http.StatusInternalServerError)
-		log.Println("Failed find book: ", err)
-		return
+		log.Println("Failed get article by title: ", err)
+		return nil, err
 	}
 
-	if article.title == "" {
-		ErrorWithJSON(w, "article not found", http.StatusNotFound)
-		return
-	}
-
-	respBody, err := json.MarshalIndent(article, "", "  ")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return respBody
+	return collection, nil
 }
 
-func (handler *MongoHandler) Save(article map[string]interface{}) error {
+func (handler *MongoHandler) Save(doc interface{}) error {
+	session := handler.Session.Copy()
+	defer session.Close()
 
+	c := session.DB("blog").C("articles")
+
+	var article entity.Article
+
+	buf, err := json.Marshal(doc)
+	json.Unmarshal(buf, &article)
+
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	err = c.Insert(article)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	return nil
 }
