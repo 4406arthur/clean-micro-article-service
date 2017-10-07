@@ -42,6 +42,10 @@
 			"Rev": "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
 		},
 		{
+			"ImportPath": "github.com/mitchellh/mapstructure",
+			"Rev": "d0303fe809921458f417bcf828397a65db30a7e4"
+		},
+		{
 			"ImportPath": "github.com/ugorji/go/codec",
 			"Rev": "5efa3251c7f7d05e5d9704a69a984ec9f1386a40"
 		},
