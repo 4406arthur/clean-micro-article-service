@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	dbHandler := infrastruct.NewSqliteHandler(localhost)
+	dbHandler := infrastruct.NewMongoHandler(localhost)
 
 	articleInteractor := new(usecase.ArticleInteractor)
 	articleInteractor.ArticleRepository = interfaces.NewDbArticleRepo(dbHandler)

@@ -10,7 +10,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func NewSqliteHandler(connString string) *MongoHandler {
+func NewMongoHandler(connString string) *MongoHandler {
 	session, err := mgo.Dial(connString)
 	if err != nil {
 		panic(err)
