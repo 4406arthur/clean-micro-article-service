@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"github.com/4406arthur/clean-micro-article-service/pkg/entity"
+	"github.com/mitchellh/mapstructure"
 )
 
 //TODO
@@ -24,20 +25,35 @@ func NewDbArticleRepo(dbHandler DbHandler) *DbArticleRepo {
 }
 
 func (repo *DbArticleRepo) FetchAll() ([]*entity.Article, error) {
-	articles, err := repo.dbHandler.GetAll()
+	type articles []entity.Article
+
+	docs, err := repo.dbHandler.GetAll()
 	if err != nil {
 		return nil, err
+	}
+
+	err := mapstructure.Decode(docs, &articles)
+	if err != nil {
+		panic(err)
 	}
 
 	return articles, nil
 }
 
 func (repo *DbArticleRepo) GetByTitle(title string) (*entity.Article, error) {
-	article, err := repo.dbHandler.GetByTitle(title)
+	type article entity.Article
+
+	doc, err := repo.dbHandler.GetByTitle(title)
 	if err != nil {
 		return nil, err
 	}
-	return &article, nil
+
+	err := mapstructure.Decode(docs, &article)
+	if err != nil {
+		panic(err)
+	}
+
+	return article, nil
 }
 
 func (repo *DbArticleRepo) Store(article entity.Article) error {
